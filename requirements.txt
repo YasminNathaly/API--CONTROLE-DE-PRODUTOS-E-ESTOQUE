@@ -1,0 +1,5 @@
+fastapi==0.115.0
+uvicorn==0.30.1
+dotenv==0.9.9
+psycopg2==2.9.10
+streamlit==1.50.0
