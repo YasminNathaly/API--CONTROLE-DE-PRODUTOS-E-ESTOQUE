@@ -1,81 +1,68 @@
 from conexao import conectar
 
-# Criar tabela de produtos
-def criar_tabela():
-    conexao, cursor = conectar()
-    if conexao:
-        try:
-            cursor.execute("""
-                CREATE TABLE IF NOT EXISTS produtos (
-                    id SERIAL PRIMARY KEY,
-                    nome TEXT NOT NULL,
-                    categoria TEXT NOT NULL,
-                    preco REAL NOT NULL,
-                    quantidade INTEGER NOT NULL
-                )
-            """)
-            conexao.commit()
-        except Exception as erro:
-            print(f"Erro ao criar a tabela: {erro}")
-        finally:
-            cursor.close()
-            conexao.close()
+def adicionar_produto(nome, categoria, preco, quantidade):
+    conn = conectar()
+    if conn:
+        cursor = conn.cursor()
+        sql = "INSERT INTO produtos (nome, categoria, preco, quantidade) VALUES (%s, %s, %s, %s)"
+        cursor.execute(sql, (nome, categoria, preco, quantidade))
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return {"mensagem": "Produto adicionado com sucesso"}
 
-criar_tabela()
-
-# Inserir um produto
-def criar_produto(nome, categoria, preco, quantidade):
-    conexao, cursor = conectar()
-    if conexao:
-        try:
-            cursor.execute(
-                "INSERT INTO produtos (nome, categoria, preco, quantidade) VALUES (%s, %s, %s, %s)",
-                (nome, categoria, preco, quantidade)
-            )
-            conexao.commit()
-        except Exception as erro:
-            print(f'Erro ao inserir produto: {erro}')
-        finally:
-            cursor.close()
-            conexao.close()
-
-# Listar todos os produtos
 def listar_produtos():
-    conexao, cursor = conectar()
-    if conexao:
-        try:
-            cursor.execute("SELECT * FROM produtos ORDER BY id")
-            return cursor.fetchall()
-        except Exception as erro:
-            print(f'Erro ao listar produtos: {erro}')
-            return []
-        finally:
-            cursor.close()
-            conexao.close()
-# Atualizar um produto
-def atualizar_produto(id, nome, categoria, preco, quantidade):
-    conexao, cursor = conectar()
-    if conexao:
-        try:
-            cursor.execute(
-                "UPDATE produtos SET nome=%s, categoria=%s, preco=%s, quantidade=%s WHERE id=%s",
-                (nome, categoria, preco, quantidade, id)
-            )
-            conexao.commit()
-        except Exception as erro:
-            print(f'Erro ao atualizar produto: {erro}')
-        finally:
-            cursor.close()
-            conexao.close()
-# Deletar um produto
-def deletar_produto(id):
-    conexao, cursor = conectar()
-    if conexao:
-        try:
-            cursor.execute("DELETE FROM produtos WHERE id=%s", (id,))
-            conexao.commit()
-        except Exception as erro:
-            print(f'Erro ao deletar produto: {erro}')
-        finally:
-            cursor.close()
-            conexao.close()
+    conn = conectar()
+    if conn:
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM produtos")
+        resultado = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        return resultado
+
+def atualizar_produto(id, nome=None, categoria=None, preco=None, quantidade=None):
+    conn = conectar()
+    if conn:
+        cursor = conn.cursor()
+        campos = []
+        valores = []
+        if nome: 
+            campos.append("nome=%s")
+            valores.append(nome)
+        if categoria:
+            campos.append("categoria=%s")
+            valores.append(categoria)
+        if preco is not None:
+            campos.append("preco=%s")
+            valores.append(preco)
+        if quantidade is not None:
+            campos.append("quantidade=%s")
+            valores.append(quantidade)
+        valores.append(id)
+        sql = f"UPDATE produtos SET {', '.join(campos)} WHERE id=%s"
+        cursor.execute(sql, tuple(valores))
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return {"mensagem": "Produto atualizado com sucesso"}
+
+def excluir_produto(id):
+    conn = conectar()
+    if conn:
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM produtos WHERE id=%s", (id,))
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return {"mensagem": "Produto excluído com sucesso"}
+
+def valor_total_estoque():
+    conn = conectar()
+    if conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT SUM(preco * quantidade) FROM produtos")
+        total = cursor.fetchone()[0]
+        cursor.close()
+        conn.close()
+        return {"valor_total": total if total else 0}
