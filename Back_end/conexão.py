@@ -4,9 +4,9 @@ def conectar():
     try:
         conexao = psycopg2.connect(
             host="localhost",
-            database="nome_do_banco",
-            user="seu_usuario",
-            password="dev1t@24"   # <- muito importante!
+            database="estoque_db",   # coloque o nome do seu banco
+            user="postgres",          # seu usuário
+            password="minhasenha123"  # sua senha
         )
         cursor = conexao.cursor()
         return conexao, cursor
