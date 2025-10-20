@@ -1,11 +1,10 @@
 from fastapi import FastAPI
-import funcoes
+import funcao
 
 app = FastAPI(title="API Controle de Produtos e Estoque")
 
-# --------------------------
+
 # ROTAS DE PRODUTOS
-# --------------------------
 
 # Adicionar um novo produto
 @app.post("/produtos")
