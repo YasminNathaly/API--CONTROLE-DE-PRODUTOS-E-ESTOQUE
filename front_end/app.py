@@ -9,7 +9,8 @@ st.set_page_config(page_title="Controle de Produtos", page_icon="📦")
 st.title("📦 Sistema de Controle de Produtos e Estoque")
 
 # Menu lateral
-menu = st.sidebar.radio("Navegação", ["Catálogo", "Adicionar produto", "Atualizar produto"])
+menu = st.sidebar.radio("Navegação", ["Catálogo", "Adicionar produto", "Atualizar produto", "Excluir produto"])
+
 
 # -------------------- Catálogo --------------------
 if menu == "Catálogo":
