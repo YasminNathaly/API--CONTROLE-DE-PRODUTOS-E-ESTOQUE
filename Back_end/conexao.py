@@ -18,4 +18,4 @@ def conectar():
             return conexao
     except Error as e:
         print(f"Erro ao conectar ao MySQL: {e}")
-        return None, None
+        return None
