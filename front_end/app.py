@@ -5,8 +5,6 @@ import requests
 # python -m streamlit run app.py
 
 API_URL = "http://127.0.0.1:8000"  # Endereço da API
-
-response = requests.get(f"{API_URL}/produtos")  # Chama o endpoint de produtos
 st.set_page_config(page_title="Controle de Produtos", page_icon="📦")
 st.title("📦 Sistema de Controle de Produtos e Estoque")
 
